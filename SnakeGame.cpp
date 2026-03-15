@@ -21,28 +21,41 @@ extern short SerpentDirection;
 // Une expression booléanne pour savoir si le game se termine ou pas
 bool GameOver = false;
 
-void timer_callback(int);
-void display_callback();
-void reshape_callback(int, int);
+
 // le premier argument : la touche pressée
 // le deuxième argument : la position de la souris au moment de la pression de la touche
-void keyboard_callback(int ,int ,int);
+void keyboard_callback(int, int, int);
+
+void display_callback();
+void reshape_callback(int, int);
+
+void drawText(string text, float x, float y);
+
+void timer_callback(int);
+
+
 
 void init() {
     glClearColor(0.0, 0.0, 0.0, 1.0);
-    initGrid(Columns,Rows);
+    initGrid(Columns, Rows);
 }
 
 int main(int argc, char** argv)
 {
+
+    // Pour afficher la fenetre de GAME et cacher la fenetre du console
+    HWND hConsole = GetConsoleWindow();
+    ShowWindow(hConsole, SW_MINIMIZE);
+
+
     // Initialisation de GLUT
-    glutInit(&argc,argv);
+    glutInit(&argc, argv);
     // Le mode d'affichage   . GLUT_DOUBLE pour une fenetre de double tampon c-à-d pendant que l'utilisateur voit une image,OpenGl dessine la suivante en coulisses 
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
     // Initialiser la position de la fenetre 
-    glutInitWindowPosition(250,250);
+    glutInitWindowPosition(150, 100);
     // Initialiser la taille de la fenetre
-    glutInitWindowSize(500,500);
+    glutInitWindowSize(500, 500);
     // Créer la fenetre
     glutCreateWindow("SNAKEGAME");
     // Enregistrer la fonction de rappel d'affichage et le rappel quand il est nécessaire
@@ -50,7 +63,7 @@ int main(int argc, char** argv)
     // Enregistrer la fonction de rappel de redimensionnement et le rappel quand il est nécessaire
     glutReshapeFunc(reshape_callback);
     // Configurer le FPS , le déplacement de la serpent 
-    glutTimerFunc(0,timer_callback,0);
+    glutTimerFunc(0, timer_callback, 0);
     // Keyboard input
     // Prend trois arguments : une fonction de rappel avec une liste de paramètre contenant un caractère générique
     // Lorsqu'une touche est pressée cette fonction de rappel est déclenchée et transmet la valeur de la touche s
@@ -69,6 +82,7 @@ int main(int argc, char** argv)
 
     return 0;
 }
+
 // Pour suivre la position
 int index = 0;
 
@@ -82,8 +96,18 @@ void display_callback() {
     drawSnake();
     // Dessiner la nourritue
     drawFood();
+    // Afficher le score
+    
+   
+    string Score = "Score:" + to_string(score);
+    //glColor3f(1.0, 0.5, 0.0);
+
+    drawText(Score,1.0, Rows - 2.0);
+     
     // échanger les tampons et l'image suivante s'affichera à l'écran
     glutSwapBuffers();
+
+    //glutBitmapCharacter();
 
     if (GameOver) {
         wstring Message = L"Your Score : " + std::to_wstring(score);
@@ -147,6 +171,21 @@ void keyboard_callback(int key, int, int) {
         break;
     }
 }
+
+
+void drawText(string text, float x, float y) {
+    // On définit la couleur (ex: blanc)
+    glColor3f(1.0, 0.0, 0.0);
+
+    // Position du texte dans la grille (x, y)
+    glRasterPos2f(x, y);
+
+    // On dessine chaque caractère
+    for (int i = 0; i < text.length(); i++) {
+        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, text[i]);
+    }
+}
+
 
 // REMARQUES:
 

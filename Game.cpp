@@ -153,9 +153,11 @@ void drawSnake() {
 	// c'est pas l'appel de verifier tout le corps du serpent car si la tete 
 	// du serpent ne passe pas dans un chemin tout ce qui précèdent la tete 
 	// ne seront pas passés
+
 	if (posX [0] == 0 || posX[0] == gridX - 1 || posY[0] == 0 || posY[0] == gridY - 1) {
 		GameOver = true;
 	}
+
 	// La couleur du nourriture
 	glColor3ub(200,0,0);
 	// Vérifier si la tete du serpent atteint la nourriture
@@ -171,6 +173,18 @@ void drawSnake() {
 			SnakeLength = MAXBODYSERPENT;
 		}
 		place_of_food = true;
+	}
+
+
+	// La vérification de la collision du corps
+	for (int i = 1; i < SnakeLength; i++) {
+
+		// Si la tête (index 0) est à la même position qu'un segment i
+
+		if (posX[0] == posX[i] && posY[0] == posY[i]) 
+		{
+			GameOver = true; 
+		}
 	}
 
 
